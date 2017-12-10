@@ -1,13 +1,12 @@
-package net.baronofclubs.rolebot;
+package net.baronofclubs.Rolebot;
 
+import net.baronofclubs.Rolebot.Backend.Server;
+import net.baronofclubs.Rolebot.Backend.Servers;
 import net.baronofclubs.debug.Debug;
-import net.baronofclubs.rolebot.Backend.Server;
-import net.baronofclubs.rolebot.Backend.Servers;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.GuildController;
 
 public class Listeners extends ListenerAdapter {
 

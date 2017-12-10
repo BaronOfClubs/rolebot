@@ -1,6 +1,6 @@
-package net.baronofclubs.rolebot.Commands;
+package net.baronofclubs.Rolebot.Commands;
 
-import net.baronofclubs.rolebot.Backend.Server;
+import net.baronofclubs.Rolebot.Backend.Server;
 import net.dv8tion.jda.core.entities.Role;
 
 public class addSelfRole extends Command{

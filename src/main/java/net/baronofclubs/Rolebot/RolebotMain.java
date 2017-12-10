@@ -1,4 +1,4 @@
-package net.baronofclubs.rolebot;
+package net.baronofclubs.Rolebot;
 
 import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.AccountType;

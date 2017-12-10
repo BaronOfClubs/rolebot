@@ -1,4 +1,4 @@
-package net.baronofclubs.rolebot.Backend;
+package net.baronofclubs.Rolebot.Backend;
 
 import net.dv8tion.jda.core.entities.Guild;
 
