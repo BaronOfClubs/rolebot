@@ -1,18 +1,18 @@
 package net.baronofclubs.Rolebot.Backend;
 
 import net.baronofclubs.Rolebot.Commands.Command;
+import net.baronofclubs.Rolebot.RolebotMain;
 import net.baronofclubs.Rolebot.Utility.ResourceManager;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.managers.GuildController;
-import net.dv8tion.jda.core.requests.restaction.ChannelAction;
 
-import java.io.Serializable;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.UUID;
 
-public class Server {
+public class Server extends ResourceManager.SaveFile {
 
     public Guild getGuild() {
         return guild;
@@ -20,7 +20,7 @@ public class Server {
 
     private UUID serverId;
     private Guild guild;
-    private GuildController guildController;
+    private transient GuildController guildController;
     private TextChannel consoleChannel;
     private LinkedList<Role> selfRoles;
     private LinkedList<RoleBoard> roleBoards;
@@ -30,6 +30,10 @@ public class Server {
         serverId = UUID.randomUUID();
         this.guild = guild;
         this.guildController = new GuildController(guild);
+        // this.consoleChannel = createConsoleChannel();
+        this.selfRoles = new LinkedList<>();
+        this.roleBoards = new LinkedList<>();
+        this.commands = new LinkedList<>();
     }
 
     public boolean addSelfRole(Role role) {
@@ -74,45 +78,16 @@ public class Server {
     }
 
     public void createConsole() {
-        ChannelAction consoleChannel = guildController.createTextChannel("Rolebot-console");//.queue();
+        guildController.createTextChannel("rolebot-console").queue();
         //consoleChannel = guild.getTextChannelsByName("Rolebot-console", false).get(0);
 
     }
 
-    private void save() {
-        SaveData saveData = new SaveData();
-        ResourceManager.save(saveData, saveData.filename);
+    public void save() {
+        setFilename("server-" + getGuild().getId());
+        setDirectory(Paths.get(RolebotMain.DEFAULT_PATH));
+        setExtension(ResourceManager.FileType.JSON);
 
+        ResourceManager.FileSaver.saveFile(this);
     }
-
-    private void reload() {
-        SaveData saveData = (SaveData) ResourceManager.load("server-" + serverId + ".ser");
-
-    }
-
-    private class SaveData implements Serializable {
-        String filename;
-        String guildId;
-        String consoleChannelId;
-        LinkedList<String> selfRolesIds;
-        LinkedList<UUID> roleBoardsIds;
-        LinkedList<UUID> commandsIds;
-
-        public SaveData() {
-            filename = "server-" + serverId + ".ser";
-            this.guildId = guild.getId();
-            consoleChannelId = consoleChannel.getId();
-            for (Role role : selfRoles) {
-                selfRolesIds.add(role.getId());
-            }
-            for (RoleBoard roleBoard : roleBoards) {
-                roleBoardsIds.add(roleBoard.getRoleBoardId());
-            }
-            for (Command command : commands) {
-                commandsIds.add(command.getId());
-            }
-        }
-
-    }
-
 }

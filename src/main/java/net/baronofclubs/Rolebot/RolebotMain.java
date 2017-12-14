@@ -1,14 +1,20 @@
 package net.baronofclubs.Rolebot;
 
+import net.baronofclubs.Rolebot.Backend.Server;
+import net.baronofclubs.Rolebot.Backend.Servers;
+import net.baronofclubs.Rolebot.Utility.ResourceManager;
 import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class RolebotMain {
@@ -31,6 +37,11 @@ public class RolebotMain {
         }
         startBot(jdaConfig);
         registerListeners(jdaConfig);
+        refreshFilesystem();
+    }
+
+    public static JDA getJDA() {
+        return jda;
     }
 
     private static boolean isConfigured() {
@@ -86,6 +97,28 @@ public class RolebotMain {
         debug("Registered listeners!");
     }
 
+    private static void refreshFilesystem() {
+        debug("Refreshing Filesystem...");
+
+        int loadedFromFileSystem = 0;
+        int createdNewFiles = 0;
+
+        for (Guild guild : jda.getGuilds()) {
+            Path serversPath = Paths.get(DEFAULT_PATH + "servers/server-" + guild.getId() + ".json");
+            if(ResourceManager.FileLoader.fileExists(serversPath)) {
+                Servers.addServer(ResourceManager.FileLoader.loadServer(serversPath));
+                loadedFromFileSystem++;
+            } else {
+                Server server = new Server(guild);
+                server.save();
+                server.createConsole();
+                createdNewFiles++;
+            }
+        }
+        debug("Refreshed Filesystem!");
+        debug("Loaded " + loadedFromFileSystem + " servers from FileSystem. Created files for " + createdNewFiles + " servers.");
+    }
+
     private static void debug(String debugText) {
         String actor = "RolebotMain";
         Debug.print(debugText, actor, Debug.Level.NONE);
@@ -135,6 +168,10 @@ public class RolebotMain {
         }
 
         public JDAConfiguration load() {
+            // Set debug options
+            Debug.setEncoding(StandardCharsets.UTF_8);
+            Debug.setLoggingLevel(Debug.Level.SPARSE);
+            Debug.setLogToFile(true);
 
             InputStream input = null;
             try {
