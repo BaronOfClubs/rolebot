@@ -9,7 +9,6 @@ public class Servers {
     private static LinkedList<Server> serverList = new LinkedList<>();
 
     public Servers() {
-        // for each guild bot is in, check to see if there is a file stored for it. If there is, load it. If not, create one.
     }
 
     public static void addServer(Server server) {
@@ -23,10 +22,6 @@ public class Servers {
             }
         }
         return null;
-    }
-
-    private boolean load() {
-        return false;
     }
 
 }

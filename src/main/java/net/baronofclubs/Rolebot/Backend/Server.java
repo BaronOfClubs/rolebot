@@ -1,6 +1,5 @@
 package net.baronofclubs.Rolebot.Backend;
 
-import net.baronofclubs.Rolebot.Commands.Command;
 import net.baronofclubs.Rolebot.RolebotMain;
 import net.baronofclubs.Rolebot.Utility.ResourceManager;
 import net.dv8tion.jda.core.entities.Guild;
@@ -24,7 +23,7 @@ public class Server extends ResourceManager.SaveFile {
     private TextChannel consoleChannel;
     private LinkedList<Role> selfRoles;
     private LinkedList<RoleBoard> roleBoards;
-    private LinkedList<Command> commands;
+    private LinkedList<String> commands;
 
     public Server(Guild guild) {
         serverId = UUID.randomUUID();
@@ -78,7 +77,9 @@ public class Server extends ResourceManager.SaveFile {
     }
 
     public void createConsole() {
-        guildController.createTextChannel("rolebot-console").queue();
+        if (!guild.getTextChannelsByName("rolebot-console", false).isEmpty()) {
+            guildController.createTextChannel("rolebot-console").queue();
+        }
         //consoleChannel = guild.getTextChannelsByName("Rolebot-console", false).get(0);
 
     }

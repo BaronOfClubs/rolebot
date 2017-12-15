@@ -2,7 +2,9 @@ package net.baronofclubs.Rolebot;
 
 import net.baronofclubs.Rolebot.Backend.Server;
 import net.baronofclubs.Rolebot.Backend.Servers;
+import net.baronofclubs.Rolebot.Command.CommandManager;
 import net.baronofclubs.debug.Debug;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.GenericMessageReactionEvent;
@@ -19,7 +21,17 @@ public class Listeners extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent event) {
         debug("Message received: " + event.getAuthor().getName() + ": " + event.getMessage().getContent());
-        // for each entry in CommandManagers command list, check to see if message startswith prefix string
+        Server server = Servers.getServer(event.getGuild());
+        Message message = event.getMessage();
+        String messageContent = event.getMessage().getContent();
+
+        for(String prefix : CommandManager.getCommands().keySet()) {
+            if (messageContent.startsWith(prefix)) {
+                Message msg = CommandManager.getCommands().get(prefix).runCommand(server, message);
+                event.getTextChannel().sendMessage(msg).queue();
+            }
+        }
+        // TODO: Stop if author is bot
     }
 
     public void onGenericMessageReaction(GenericMessageReactionEvent event) {

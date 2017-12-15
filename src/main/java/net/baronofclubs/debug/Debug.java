@@ -25,12 +25,14 @@ public class Debug {
     private static Level loggingLevel;
     private static boolean logToFile;
     private static Charset encoding;
+    private static Path logsPath;
 
     public static void setLoggingLevel(Level level) {
         loggingLevel = level;
     }
-    public static void setLogToFile(boolean log) {
+    public static void setLogToFile(boolean log, String path) {
         logToFile = log;
+        logsPath = Paths.get(path);
     }
 
     public static void setEncoding(Charset charset) {
@@ -61,7 +63,7 @@ public class Debug {
     }
 
     private static void writeToFile(String string) {
-        Path logsPath = Paths.get("logs/");
+        //Path logsPath = Paths.get("logs/");
         String fileName = ZonedDateTime.now().toLocalDate().toString() + ".log";
         Path path = Paths.get(logsPath + File.separator + fileName);
 

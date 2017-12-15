@@ -2,6 +2,11 @@ package net.baronofclubs.Rolebot;
 
 import net.baronofclubs.Rolebot.Backend.Server;
 import net.baronofclubs.Rolebot.Backend.Servers;
+import net.baronofclubs.Rolebot.Command.CommandManager;
+import net.baronofclubs.Rolebot.Command.Commands.addSelfRole;
+import net.baronofclubs.Rolebot.Command.Commands.listSelfRoles;
+import net.baronofclubs.Rolebot.Command.Commands.ping;
+import net.baronofclubs.Rolebot.Command.Commands.removeSelfRole;
 import net.baronofclubs.Rolebot.Utility.ResourceManager;
 import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.AccountType;
@@ -26,6 +31,7 @@ public class RolebotMain {
 
     private static JDAConfiguration jdaConfig;
     private static JDA jda;
+    private static CommandManager commandManager;
 
     public static void main(String[] args) {
         debug("Starting " + PROJECT_NAME + " " + VERSION + " by " + AUTHOR + "...");
@@ -38,6 +44,7 @@ public class RolebotMain {
         startBot(jdaConfig);
         registerListeners(jdaConfig);
         refreshFilesystem();
+        configureCommandManager();
     }
 
     public static JDA getJDA() {
@@ -58,7 +65,7 @@ public class RolebotMain {
         // Set debug options
         Debug.setEncoding(StandardCharsets.UTF_8);
         Debug.setLoggingLevel(Debug.Level.SPARSE);
-        Debug.setLogToFile(true);
+        Debug.setLogToFile(true, "/Rolebot/logs/");
         // Create bot object and configure
         jdaConfig = new JDAConfiguration();
         jdaConfig.setAccountType();
@@ -104,12 +111,13 @@ public class RolebotMain {
         int createdNewFiles = 0;
 
         for (Guild guild : jda.getGuilds()) {
-            Path serversPath = Paths.get(DEFAULT_PATH + "servers/server-" + guild.getId() + ".json");
+            Path serversPath = Paths.get(DEFAULT_PATH + "server-" + guild.getId() + ".json");
             if(ResourceManager.FileLoader.fileExists(serversPath)) {
                 Servers.addServer(ResourceManager.FileLoader.loadServer(serversPath));
                 loadedFromFileSystem++;
             } else {
                 Server server = new Server(guild);
+                Servers.addServer(server);
                 server.save();
                 server.createConsole();
                 createdNewFiles++;
@@ -117,6 +125,14 @@ public class RolebotMain {
         }
         debug("Refreshed Filesystem!");
         debug("Loaded " + loadedFromFileSystem + " servers from FileSystem. Created files for " + createdNewFiles + " servers.");
+    }
+
+    private static void configureCommandManager() {
+        commandManager = new CommandManager();
+        CommandManager.addCommand(new ping());
+        CommandManager.addCommand(new addSelfRole());
+        CommandManager.addCommand(new removeSelfRole());
+        CommandManager.addCommand(new listSelfRoles());
     }
 
     private static void debug(String debugText) {
@@ -171,7 +187,7 @@ public class RolebotMain {
             // Set debug options
             Debug.setEncoding(StandardCharsets.UTF_8);
             Debug.setLoggingLevel(Debug.Level.SPARSE);
-            Debug.setLogToFile(true);
+            Debug.setLogToFile(true, "/Rolebot/logs/");
 
             InputStream input = null;
             try {
