@@ -6,6 +6,10 @@ import net.dv8tion.jda.core.entities.Message;
 public interface Command {
 
     String getPrefix();
+    String getUsage();
+    char getArgDelineator();
+    int getArgNumber();
+
     Message runCommand(Server server, Message message);
 
 }

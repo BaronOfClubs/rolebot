@@ -1,9 +1,9 @@
 package net.baronofclubs.Rolebot;
 
+import net.baronofclubs.Debug.Debug;
 import net.baronofclubs.Rolebot.Backend.Server;
 import net.baronofclubs.Rolebot.Backend.Servers;
 import net.baronofclubs.Rolebot.Command.CommandManager;
-import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -31,6 +31,9 @@ public class Listeners extends ListenerAdapter {
                 event.getTextChannel().sendMessage(msg).queue();
             }
         }
+
+        /*Consumer<Message> callback = (response) -> System.out.printf("Sent Message %s\n", response);
+        event.getTextChannel().sendMessage(message).queue(callback);*/
         // TODO: Stop if author is bot
     }
 

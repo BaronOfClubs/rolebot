@@ -1,16 +1,16 @@
 package net.baronofclubs.Rolebot.Command.Commands;
 
+import net.baronofclubs.Rolebot.Backend.DecisionBoard;
 import net.baronofclubs.Rolebot.Backend.Server;
 import net.baronofclubs.Rolebot.Command.Command;
 import net.baronofclubs.Rolebot.Command.CommandUtils;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
 
-public class removeSelfRole extends CommandUtils implements Command {
+public class createBoard extends CommandUtils implements Command {
 
-    private String prefix = "removeSelfRole";
-    private String usage = "removeSelfRole Role Name";
+    private String prefix = "createBoard";
+    private String usage = "Usage: `addSelfRole Role Name`";
     private int requiredArgs = 1;
     private char argDelineator = ';';
 
@@ -37,30 +37,20 @@ public class removeSelfRole extends CommandUtils implements Command {
     @Override
     public Message runCommand(Server server, Message message) {
         MessageBuilder messageBuilder = new MessageBuilder();
-        String args = message.getContent().split(" ", 2)[1];
+        String[] args = message.getContent().split(" ");
 
-        if (args.isEmpty()) {
-            messageBuilder.append("No Roles provided.");
+        messageBuilder.append("Board created. Preview: ");
+        if (args.length < 3) {
+            messageBuilder.append("Not enough args provided.");
             messageBuilder.append("\n");
             messageBuilder.append(usage);
-        } else if (server.getSelfRoles().isEmpty()) {
-            messageBuilder.append("No Roles found.");
         } else {
-            boolean roleFound = false;
-            for (Role role : server.getSelfRoles()) {
-                if (role.getName().equalsIgnoreCase(args)) {
-                    roleFound = true;
-                    server.removeSelfRole(role);
-                    messageBuilder.append("Removed `" + role.getName() + "` from SelfRoles");
-                    server.save();
-                }
-            }
-            if (!roleFound) {
-                messageBuilder.append("No Roles found.");
-            }
-
+            DecisionBoard board = new DecisionBoard(server);
+            board.setTitle(args[1]);
+            board.setDescription(args[2]);
+            board.addOption("Test3", server.getGuild().getEmotes().get(1));
+            messageBuilder.setEmbed(board.getEmbed());
         }
-
         return messageBuilder.build();
     }
 }

@@ -13,6 +13,8 @@ public class addSelfRole extends CommandUtils implements Command {
 
     private String prefix = "addSelfRole";
     private String usage = "Usage: `addSelfRole Role Name`";
+    private int requiredArgs = 1;
+    private char delineator;
 
     public addSelfRole() {
 
@@ -52,5 +54,20 @@ public class addSelfRole extends CommandUtils implements Command {
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public String getUsage() {
+        return usage;
+    }
+
+    @Override
+    public char getArgDelineator() {
+        return delineator;
+    }
+
+    @Override
+    public int getArgNumber() {
+        return requiredArgs;
     }
 }

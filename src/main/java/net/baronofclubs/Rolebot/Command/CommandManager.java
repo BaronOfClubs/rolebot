@@ -5,11 +5,7 @@ import java.util.Map;
 
 public class CommandManager {
 
-    private static Map<String, Command> commands;
-
-    public CommandManager() {
-        commands = new HashMap<>();
-    }
+    private static Map<String, Command> commands = new HashMap<>();
 
     public static void addCommand(Command command) {
         commands.put(command.getPrefix(), command);

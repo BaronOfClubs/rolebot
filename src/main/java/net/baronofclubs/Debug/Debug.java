@@ -1,4 +1,4 @@
-package net.baronofclubs.debug;
+package net.baronofclubs.Debug;
 
 import java.io.*;
 import java.nio.charset.Charset;

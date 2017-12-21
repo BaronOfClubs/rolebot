@@ -2,6 +2,7 @@ package net.baronofclubs.Rolebot.Backend;
 
 import net.baronofclubs.Rolebot.RolebotMain;
 import net.baronofclubs.Rolebot.Utility.ResourceManager;
+import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.core.managers.GuildController;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Server extends ResourceManager.SaveFile {
 
@@ -20,6 +22,7 @@ public class Server extends ResourceManager.SaveFile {
     private UUID serverId;
     private Guild guild;
     private transient GuildController guildController;
+
     private TextChannel consoleChannel;
     private LinkedList<Role> selfRoles;
     private LinkedList<RoleBoard> roleBoards;
@@ -55,6 +58,10 @@ public class Server extends ResourceManager.SaveFile {
         return false;
     }
 
+    public Channel getConsoleChannel() {
+        return consoleChannel;
+    }
+
     public LinkedList<Role> getSelfRoles() {
         return selfRoles;
     }
@@ -77,8 +84,10 @@ public class Server extends ResourceManager.SaveFile {
     }
 
     public void createConsole() {
-        if (!guild.getTextChannelsByName("rolebot-console", false).isEmpty()) {
-            guildController.createTextChannel("rolebot-console").queue();
+        guildController = new GuildController(guild);
+        if (guild.getTextChannelsByName("rolebot-console", false).isEmpty()) {
+            Consumer<Channel> onSuccess = (channel) -> consoleChannel = (TextChannel) channel;
+            guildController.createTextChannel("rolebot-console").queue(onSuccess);
         }
         //consoleChannel = guild.getTextChannelsByName("Rolebot-console", false).get(0);
 

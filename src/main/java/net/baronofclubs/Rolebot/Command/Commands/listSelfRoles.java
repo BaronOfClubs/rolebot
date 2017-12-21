@@ -9,11 +9,29 @@ import net.dv8tion.jda.core.entities.Role;
 
 public class listSelfRoles extends CommandUtils implements Command {
 
-    String prefix = "listSelfRoles";
+    private String prefix = "listSelfRoles";
+    private String usage = "listSelfRoles";
+    private int requiredArgs = 0;
+    private char argDelineator = ';';
 
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    @Override
+    public String getUsage() {
+        return usage;
+    }
+
+    @Override
+    public char getArgDelineator() {
+        return argDelineator;
+    }
+
+    @Override
+    public int getArgNumber() {
+        return requiredArgs;
     }
 
     @Override

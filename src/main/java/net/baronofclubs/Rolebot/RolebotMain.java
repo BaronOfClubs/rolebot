@@ -1,14 +1,14 @@
 package net.baronofclubs.Rolebot;
 
+import net.baronofclubs.ConsoleListener.ConsoleCommandManager;
+import net.baronofclubs.ConsoleListener.ConsoleListener;
+import net.baronofclubs.Debug.Debug;
 import net.baronofclubs.Rolebot.Backend.Server;
 import net.baronofclubs.Rolebot.Backend.Servers;
 import net.baronofclubs.Rolebot.Command.CommandManager;
-import net.baronofclubs.Rolebot.Command.Commands.addSelfRole;
-import net.baronofclubs.Rolebot.Command.Commands.listSelfRoles;
-import net.baronofclubs.Rolebot.Command.Commands.ping;
-import net.baronofclubs.Rolebot.Command.Commands.removeSelfRole;
+import net.baronofclubs.Rolebot.Command.Commands.*;
+import net.baronofclubs.Rolebot.Utility.ConsoleCommands;
 import net.baronofclubs.Rolebot.Utility.ResourceManager;
-import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -31,7 +31,6 @@ public class RolebotMain {
 
     private static JDAConfiguration jdaConfig;
     private static JDA jda;
-    private static CommandManager commandManager;
 
     public static void main(String[] args) {
         debug("Starting " + PROJECT_NAME + " " + VERSION + " by " + AUTHOR + "...");
@@ -45,6 +44,7 @@ public class RolebotMain {
         registerListeners(jdaConfig);
         refreshFilesystem();
         configureCommandManager();
+        enableConsoleListener();
     }
 
     public static JDA getJDA() {
@@ -62,7 +62,7 @@ public class RolebotMain {
 
     private static void configure() {
         debug("Configuring Rolebot...");
-        // Set debug options
+        // Set Debug options
         Debug.setEncoding(StandardCharsets.UTF_8);
         Debug.setLoggingLevel(Debug.Level.SPARSE);
         Debug.setLogToFile(true, "/Rolebot/logs/");
@@ -128,11 +128,17 @@ public class RolebotMain {
     }
 
     private static void configureCommandManager() {
-        commandManager = new CommandManager();
         CommandManager.addCommand(new ping());
         CommandManager.addCommand(new addSelfRole());
         CommandManager.addCommand(new removeSelfRole());
         CommandManager.addCommand(new listSelfRoles());
+        CommandManager.addCommand(new createConsole());
+        CommandManager.addCommand(new createBoard());
+    }
+
+    private static void enableConsoleListener() {
+        ConsoleListener.start();
+        ConsoleCommandManager.registerCommand(new ConsoleCommands.ChatByConsole());
     }
 
     private static void debug(String debugText) {
@@ -184,7 +190,7 @@ public class RolebotMain {
         }
 
         public JDAConfiguration load() {
-            // Set debug options
+            // Set Debug options
             Debug.setEncoding(StandardCharsets.UTF_8);
             Debug.setLoggingLevel(Debug.Level.SPARSE);
             Debug.setLogToFile(true, "/Rolebot/logs/");

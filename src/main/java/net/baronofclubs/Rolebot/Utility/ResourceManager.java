@@ -2,8 +2,8 @@ package net.baronofclubs.Rolebot.Utility;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.baronofclubs.Debug.Debug;
 import net.baronofclubs.Rolebot.Backend.Server;
-import net.baronofclubs.debug.Debug;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
